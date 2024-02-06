@@ -1,8 +1,33 @@
 import re
 from urllib.parse import urlparse
+from bs4 import BeautifulSoup
+
+
+# global variables
+pageCount = 50
 
 def scraper(url, resp):
+    """Take in two parameter for scrapper
+
+    Args:
+        url (str): added to the frontier / download from the cache
+        resp (Response): see utils/response.py, response given by the caching server
+
+    Returns:
+        list: urls that are scraped from the response, wil be add to and retrieve from the
+        Frontier cache.
+    """
+    if resp.status != 200 or resp.raw_response.content == None:
+        return[]
     links = extract_next_links(url, resp)
+    
+    # Check the number of page checked
+    global pageCount
+    if pageCount == 1:
+        # return the info of these pages
+        pageCount = 50
+    else:
+        pageCount -= 1
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp):
@@ -15,7 +40,20 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    return list()
+    if resp.status != 200:
+        return []
+    
+    soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
+    links = []
+    for link in soup.find_all('a', href=True):
+        href = link.get('href')
+        if href == None:
+            continue
+        if href.startswitch('http'):
+            links.append(href)
+        else:
+            links.append(url + href)
+    return links
 
 def is_valid(url):
     # Decide whether to crawl this url or not. 
@@ -23,7 +61,8 @@ def is_valid(url):
     # There are already some conditions that return False.
     try:
         parsed = urlparse(url)
-        if parsed.scheme not in set(["http", "https"]):
+        parseDomains = ["ics.uci.edu", "cs.uci.edu", "informatics.uci.edu", "stat.uci.edu"]
+        if parsed.scheme not in set(["http", "https"]) or (url.find("?") != -1) or (url.find("&") != -1):
             return False
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
