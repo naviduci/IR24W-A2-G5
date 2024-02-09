@@ -1,9 +1,22 @@
 import re
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin, urldefrag
+from bs4 import BeautifulSoup
+
+
+visited = set()
 
 def scraper(url, resp):
+    global visited
+    if url in visited:
+        return []
+
+    visited.add(url)
+
+    if resp.status_code != 200 or not resp.raw_response:
+        return []
+
     links = extract_next_links(url, resp)
-    return [link for link in links if is_valid(link)]
+    return [link for link in links if is_valid(link) and link not in visited]
 
 def extract_next_links(url, resp):
     # Implementation required.
@@ -15,16 +28,40 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    return list()
+    urls = []
+
+    if resp.status_code == 200 and resp.raw_response:
+        try:
+            page_con = resp.raw_response.content
+            parsed_page = BeautifulSoup(page_con, "html.parser")
+
+            for v in parsed_page.find_all('a'):
+                href = v.get('href')
+
+                if href:
+                    full_url = urljoin(resp.url, href)
+                    url_no_frag, frag = urldefrag(full_url)
+                    urls.append(full_url)
+        except Exception as errors:
+            print(f"Something wrong (prob need to be checked)!: {errors}")
+    return urls
+
 
 def is_valid(url):
     # Decide whether to crawl this url or not. 
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
+    domains = ["ics.uci.edu", "cs.uci.edu", "informatics.uci.edu", "stat.uci.edu"]
     try:
         parsed = urlparse(url)
-        if parsed.scheme not in set(["http", "https"]):
+        if parsed.scheme not in {"http", "https"}:
             return False
+
+        url_domain = parsed.netloc
+
+        if url_domain not in domains:
+            return False
+
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
@@ -36,5 +73,5 @@ def is_valid(url):
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
 
     except TypeError:
-        print ("TypeError for ", parsed)
+        print ("TypeError for ", url)
         raise
