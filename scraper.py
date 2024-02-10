@@ -182,6 +182,8 @@ def getOutput():
     commonWords = print50(TokenList)
     for word in commonWords:
         output += word + "\n  "
+        
+    # TODO: return in ALPHABETICALL
     output += "\n4. Subdomains found: \n"
     updateSubdomains(UniqueUrl)
     for key, value in Subdomains.items():
