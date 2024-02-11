@@ -1,6 +1,13 @@
 import re
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
+nltk.download('stopwords')
+
+# TODO: check fronteir url log, make output unique domain alphebetical
+
+# It is important to filter out urls that are not with ics.uci.edu domain.
+# Detect and avoid crawling very large files, especially if they have low information value
+#  is_valid filters a large number of such extensions, but there may be more
 
 
 # global variables
@@ -12,6 +19,7 @@ Subdomains = dict() # contain the subdomain as a key and the amount of pages in 
 # a counter that increments down to 1 before being reset, used in updating the
 # output file containing our report.
 updateOutput = 1500
+respStats = 0
 
 
 def scraper(url, resp):
@@ -25,15 +33,18 @@ def scraper(url, resp):
         list: urls that are scraped from the response, wil be add to and retrieve from the
         Frontier cache.
     """
-    if resp.status != 200 or resp.raw_response.content == None:
-        return[]
+    global respStats
+    if resp.status != 200 or resp.raw_response.content is None:
+        return []
     links = extract_next_links(url, resp)
+
+    # TODO: check if this work as intended
+    global updateOutput
     
-    # Check the number of page checked
-    global pageCount
-    if pageCount == 1:
-        # return the info of these pages
-        pageCount = 50
+    #count number of page checked, stop at certain number of pages crawl
+    if updateOutput == 1:
+        getOutput()
+        updateOutput = 1500
     else:
         pageCount -= 1
     return [link for link in links if is_valid(link)]
@@ -79,13 +90,23 @@ def is_valid(url):
 
     try:
         parsed = urlparse(url)
+        """
+        print("URL:", url)
+        print("Parsed Scheme:", parsed.scheme)
+        print("Parsed Hostname:", parsed.hostname)
+        print("Parsed Netloc:", parsed.netloc)
+        print("Parsed Path:", parsed.path)
+        """
         if parsed.hostname==None or parsed.netloc==None:
+            # print("Hostname or Netloc is None")
             return False
         validDomains=[".ics.uci.edu","cs.uci.edu",".informatics.uci.edu",
                       ".stat.uci.edu"]
         if parsed.scheme not in set(["http", "https"]) or (url.find("?") != -1)\
                 or (url.find("&") != -1):
+            # print("Invalid scheme or contains query parameters")
             return False
+        
         if any(dom in parsed.hostname for dom in validDomains) \
             and not re.search(r"(css|js|bmp|gif|jpe?g|ico"
                               + r"|png|tiff?|mid|mp2|mp3|mp4"
@@ -105,17 +126,19 @@ def is_valid(url):
                              r'[0-9]{1,2}-[0-9]{1,2}-(19|20)[0-9]{2}',
                              parsed.path.lower()):
             if url in UniqueUrl:
+                 # print("URL already in UniqueUrl set")
                 return False
             else:
                 UniqueUrl.add(url)
+                # print("URL added to UniqueUrl set")
                 return True
         else:
             return False
 
+    except ValueError as e:
+        print(f'Error validating IP address for URL: {url}. Error: {e}')
+        return False
 
-    except TypeError:
-        print("TypeError for ", parsed)
-        raise
 
 # helper methods
 
@@ -182,16 +205,17 @@ def getOutput():
     commonWords = print50(TokenList)
     for word in commonWords:
         output += word + "\n  "
-        
-    # TODO: return in ALPHABETICALL
     output += "\n4. Subdomains found: \n"
+    # Sort subdomains by name
     updateSubdomains(UniqueUrl)
+    sorted_subdomains = sorted(Subdomains.items(), key=lambda x: x[0])
     for key, value in Subdomains.items():
         output += "   subdomain name: " + str(key) + ", pages found: " \
                   + str(value) + "\n"
     try:
         f = open("output.txt", "x")
-    except:
+    except Exception as e:
+        print(f'Error writing output to file: {e} re-trying...')
         f = open("output.txt", "w")
     finally:
         f.write(output)
