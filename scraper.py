@@ -21,10 +21,8 @@ def get_fingerprint(content, n=3, functions=hash):
     # this counter counts each words and make a dict {words: count#}
     counts = Counter(n_grams)
 
-    # 4. Hash the selected n-grams
     hash_n_grams = {functions(k): v for k, v in counts.items()}
 
-    # 5. The hash values are stored, which can be done here or in another data structure for comparison
     return set(hash_n_grams)
 
 
