@@ -1,4 +1,10 @@
 import re
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import RegexpTokenizer
+from simhash import Simhash, SimhashIndex
+from utils.response import Response
+from collections import Counter
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 nltk.download('stopwords')
@@ -46,7 +52,9 @@ def scraper(url, resp):
         getOutput()
         updateOutput = 1500
     else:
-        pageCount -= 1
+        updateOutput -= 1
+    # checks the list of urls found on a page using the is_valid function to
+    # decide whether or not to return each url
     return [link for link in links if is_valid(link)]
 
 def tokenize(resp):
@@ -209,7 +217,7 @@ def getOutput():
     # Sort subdomains by name
     updateSubdomains(UniqueUrl)
     sorted_subdomains = sorted(Subdomains.items(), key=lambda x: x[0])
-    for key, value in Subdomains.items():
+    for key, value in sorted_subdomains.items():
         output += "   subdomain name: " + str(key) + ", pages found: " \
                   + str(value) + "\n"
     try:
