@@ -1,22 +1,65 @@
 import re
 from urllib.parse import urlparse, urljoin, urldefrag
+from collections import Counter
 from bs4 import BeautifulSoup
 
-
 visited = set()
+max_depth = 5  # for now
+url_depth = {}
+
+
+def get_fingerprint(content, n=3, functions=hash):
+
+    soup = BeautifulSoup(content, 'html.parser')
+    all_text = soup.get_text(separator=' ', strip=True)
+    words = re.findall(r'\w+', all_text.lower())  #lower them
+
+    # ngram saperate
+    n_grams = zip(*[words[i:] for i in range(n)])
+    n_grams = [' '.join(v) for v in n_grams]
+
+    # this counter counts each words and make a dict {words: count#}
+    counts = Counter(n_grams)
+
+    # 4. Hash the selected n-grams
+    hash_n_grams = {functions(k): v for k, v in counts.items()}
+
+    # 5. The hash values are stored, which can be done here or in another data structure for comparison
+    return set(hash_n_grams)
+
 
 def scraper(url, resp):
-    global visited
+    global visited, url_depth
+
+    if url not in url_depth:
+        url_depth[url] = 0
+
+    depth_now = url_depth[url]
+
     if url in visited:
+        print("visited")
+        return []
+    elif depth_now > max_depth:
+        print("max depth, depth now:", depth_now)
         return []
 
     visited.add(url)
 
-    if resp.status_code != 200 or not resp.raw_response:
+    if resp.status != 200 or not resp.raw_response:
+        print("not 200 scraper!")
         return []
 
     links = extract_next_links(url, resp)
-    return [link for link in links if is_valid(link) and link not in visited]
+    valids = []
+
+    for v in links:
+        if is_valid(v) and v not in visited:
+            if v not in url_depth:
+                url_depth[v] = depth_now + 1
+            valids.append(v)
+    print("returning", valids)
+    return valids
+
 
 def extract_next_links(url, resp):
     # Implementation required.
@@ -30,11 +73,10 @@ def extract_next_links(url, resp):
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     urls = []
 
-    if resp.status_code == 200 and resp.raw_response:
+    if resp.status == 200 and resp.raw_response:
         try:
             page_con = resp.raw_response.content
             parsed_page = BeautifulSoup(page_con, "html.parser")
-
             for v in parsed_page.find_all('a'):
                 href = v.get('href')
 
@@ -44,22 +86,26 @@ def extract_next_links(url, resp):
                     urls.append(full_url)
         except Exception as errors:
             print(f"Something wrong (prob need to be checked)!: {errors}")
+    else:
+        print("some problem occured!", resp.status)
     return urls
 
 
 def is_valid(url):
-    # Decide whether to crawl this url or not. 
+    # Decide whether to crawl this url or not.
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
     domains = ["ics.uci.edu", "cs.uci.edu", "informatics.uci.edu", "stat.uci.edu"]
     try:
         parsed = urlparse(url)
         if parsed.scheme not in {"http", "https"}:
+            print("not https :", parsed.scheme)
             return False
 
         url_domain = parsed.netloc
 
-        if url_domain not in domains:
+        if not any(v for v in domains if url_domain.endswith(v)):
+            print("not domain : ", url_domain)
             return False
 
         return not re.match(
@@ -73,5 +119,7 @@ def is_valid(url):
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
 
     except TypeError:
-        print ("TypeError for ", url)
+        print("TypeError for ", url)
         raise
+
+
