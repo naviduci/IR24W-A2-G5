@@ -28,7 +28,7 @@ Subdomains = dict() # contain the subdomain as a key and the amount of pages in 
 
 data_processed = 0 # the currect data processed
 
-data_threshold = 2000000  # Set the data threshold (e.g., 5 MB)
+data_threshold = 5000000  # Set the data threshold (e.g., 5 MB)
 
 frontier_empty = False
 # output file Output.txt containing our report.
