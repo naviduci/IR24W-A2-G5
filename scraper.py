@@ -53,9 +53,11 @@ def extract_next_links(url, resp):
 
     # scrapping the url param is done. Mark as scrapped  
     scrapped_urls.add(url)
+    print(soup.title.text)
     print("WEBSITE URL--> ", url)
     print("Scrapped Urls--> ", len(scrapped_urls))
     print("Duplicate Urls--> ", len(duplicate_urls))
+    print()
     return links
 
 def is_valid(url):
