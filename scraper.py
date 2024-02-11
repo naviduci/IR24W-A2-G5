@@ -64,40 +64,24 @@ def scraper(url, resp):
     # decide whether or not to return each url
     return [link for link in links if is_valid(link)]
 
-def tokenize(resp):
-    # Tokenizes a text file looking for an sequence of 2+ alphanumerics while
-    # ignoring stop words
-    urlTokens = []
-    # exclusionWords is a list of words that we dont want to include in out
-    # list of tokens. These include months and
-    # days, which appear in disproportionatly high numbers
-    exclusionWords = {'january', 'jan', 'feb', 'february', 'march', 'mar',
-                      'april', 'apr', 'may', 'june', 'jun', 'jul', 'july', 'aug'
-                      'august', 'september', 'sept', 'aug', 'august', 'october',
-                      'oct', 'november', 'nov', 'dec', 'december', 'monday',
-                      'mon', 'tues', 'tuesday', 'wednesday', 'wed', 'thursday',
-                      'thurs', 'friday', 'fri', 'sat', 'saturday', 'sun',
-                      'sunday'}
+def extract_next_links(url, resp):
+    # Implementation required.
+    # url: the URL that was used to get the page
+    # resp.url: the actual url of the page
+    # resp.status: the status code returned by the server. 200 is OK, you got the page. Other numbers mean that there was some kind of problem.
+    # resp.error: when status is not 200, you can check the error here, if needed.
+    # resp.raw_response: this is where the page actually is. More specifically, the raw_response has two parts:
+    #         resp.raw_response.url: the url, again
+    #         resp.raw_response.content: the content of the page!
+    # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
+    if resp.status != 200:
+        return False
+    
+    webResponse = BeautifulSoup(resp.raw_response.content, 'html.parser')
+    urlTokens = tokenize(webResponse.getText())
+    update_max_tokens(urlTokens, url)
 
-    # tokenizes with the pattern '[a-z]{2,}' which finds two letters or more.
-    # We excluded numbers because there were
-    # no instances where we found numbers to have important meaning
-    myTokenizer = RegexpTokenizer('[a-z]{2,}')
-    tempTokens = myTokenizer.tokenize(resp)
-    sw = stopwords.words('english')
-
-    # this loop checks if tokens are stop words or words we want to exclude,
-    # if not then it adds it to the token list
-    for tokens in tempTokens:
-        checkToken = tokens.lower()
-        if checkToken not in sw and checkToken not in exclusionWords:
-            urlTokens.append(checkToken)
-        else:
-            continue
-    # updataDBD adds all tokens found on this page to our master list
-    # containing all tokens found on all pages
-    updateDBD(urlTokens)
-    return urlTokens
+    return extract_links_from_tags(webResponse.find_all('a'))
 
 def is_valid(url):
     global UniqueUrl
@@ -236,21 +220,37 @@ def getOutput():
         f.write(output)
         f.close()
  
-def extract_next_links(url, resp):
-    # Implementation required.
-    # url: the URL that was used to get the page
-    # resp.url: the actual url of the page
-    # resp.status: the status code returned by the server. 200 is OK, you got the page. Other numbers mean that there was some kind of problem.
-    # resp.error: when status is not 200, you can check the error here, if needed.
-    # resp.raw_response: this is where the page actually is. More specifically, the raw_response has two parts:
-    #         resp.raw_response.url: the url, again
-    #         resp.raw_response.content: the content of the page!
-    # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    if resp.status != 200:
-        return False
-    
-    webResponse = BeautifulSoup(resp.raw_response.content, 'html.parser')
-    urlTokens = tokenize(webResponse.getText())
-    update_max_tokens(urlTokens, url)
+def tokenize(resp):
+    # Tokenizes a text file looking for an sequence of 2+ alphanumerics while
+    # ignoring stop words
+    urlTokens = []
+    # exclusionWords is a list of words that we dont want to include in out
+    # list of tokens. These include months and
+    # days, which appear in disproportionatly high numbers
+    exclusionWords = {'january', 'jan', 'feb', 'february', 'march', 'mar',
+                      'april', 'apr', 'may', 'june', 'jun', 'jul', 'july', 'aug'
+                      'august', 'september', 'sept', 'aug', 'august', 'october',
+                      'oct', 'november', 'nov', 'dec', 'december', 'monday',
+                      'mon', 'tues', 'tuesday', 'wednesday', 'wed', 'thursday',
+                      'thurs', 'friday', 'fri', 'sat', 'saturday', 'sun',
+                      'sunday'}
 
-    return extract_links_from_tags(webResponse.find_all('a'))
+    # tokenizes with the pattern '[a-z]{2,}' which finds two letters or more.
+    # We excluded numbers because there were
+    # no instances where we found numbers to have important meaning
+    myTokenizer = RegexpTokenizer('[a-z]{2,}')
+    tempTokens = myTokenizer.tokenize(resp)
+    sw = stopwords.words('english')
+
+    # this loop checks if tokens are stop words or words we want to exclude,
+    # if not then it adds it to the token list
+    for tokens in tempTokens:
+        checkToken = tokens.lower()
+        if checkToken not in sw and checkToken not in exclusionWords:
+            urlTokens.append(checkToken)
+        else:
+            continue
+    # updataDBD adds all tokens found on this page to our master list
+    # containing all tokens found on all pages
+    updateDBD(urlTokens)
+    return urlTokens
