@@ -9,7 +9,8 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 nltk.download('stopwords')
 
-# TODO: check fronteir url log, make output unique domain alphebetical
+# TODO: check if output can be produce more than twice, check 50 common words, remove 200 status but no data
+# and Detect and avoid crawling very large files, especially if they have low information value
 
 # It is important to filter out urls that are not with ics.uci.edu domain.
 # Detect and avoid crawling very large files, especially if they have low information value
@@ -25,8 +26,9 @@ Subdomains = dict() # contain the subdomain as a key and the amount of pages in 
 
 data_processed = 0 # the currect data processed
 
-data_threshold = 1000000  # Set the data threshold (e.g., 1 MB)
+data_threshold = 2000000  # Set the data threshold (e.g., 5 MB)
 
+frontier_empty = False
 # output file Output.txt containing our report.
 
 
@@ -41,25 +43,34 @@ def scraper(url, resp):
         list: urls that are scraped from the response, wil be add to and retrieve from the
         Frontier cache.
     """
-    global respStats
-    if resp.status != 200:
+    # global respStats
+    if resp.status != 200 or not resp.raw_response.content:
         return []
     
-    # check content withint a page of code 200
-    if not resp.content or len(resp.content) < 100:
-        print(f"Warning: URL {url} returned a 200 status but no data")
-        return []
+    # check content within a page of code 200
 
     links = extract_next_links(url, resp)
 
-    # TODO: check if this work as intended
-    global updateOutput
+    # TODO: check if this works as intended
+    # global updateOutput
     
+    global data_processed
+    global data_threshold
+    global frontier_empty
     # keep track of the data being processed, update at data processed threshold
-    data_processed += len(resp.content)
+    data_processed = len(get_content_from_response(resp)) if get_content_from_response(resp) else 0
     if data_processed >= data_threshold:
         getOutput()
         data_processed = 0
+    
+    if not links:
+        frontier_empty = True
+
+    # Call getOutput() only if frontier is empty
+    if frontier_empty:
+        getOutput()
+        frontier_empty = False
+    
     # checks the list of urls found on a page using the is_valid function to
     # decide whether or not to return each url
     return [link for link in links if is_valid(link)]
@@ -75,7 +86,10 @@ def extract_next_links(url, resp):
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
     if resp.status != 200:
-        return False
+        return []
+    
+    if (len(resp.raw_response.content) > 5 * 1024 * 1024):  # Set a threshold of 10 MB for testing:
+        return []
     
     webResponse = BeautifulSoup(resp.raw_response.content, 'html.parser')
     urlTokens = tokenize(webResponse.getText())
@@ -140,6 +154,8 @@ def is_valid(url):
 
 
 # helper methods
+def get_content_from_response(resp):
+    return resp.raw_response.content if hasattr(resp.raw_response, 'content') else None
 
 def update_max_tokens(tokens, url):
     # compares current webpage's token count to the highest count to see if we
@@ -208,13 +224,12 @@ def getOutput():
     # Sort subdomains by name
     updateSubdomains(UniqueUrl)
     sorted_subdomains = sorted(Subdomains.items(), key=lambda x: x[0])
-    for key, value in sorted_subdomains.items():
-        output += "   subdomain name: " + str(key) + ", pages found: " \
-                  + str(value) + "\n"
+    for key, value in sorted_subdomains:
+        output += f"   subdomain name: {key}, pages found: {value}\n"
     try:
         f = open("output.txt", "x")
     except Exception as e:
-        print(f'Error writing output to file: {e} re-trying...')
+        print(f'File also reading exist, updating file...')
         f = open("output.txt", "w")
     finally:
         f.write(output)
