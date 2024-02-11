@@ -1,5 +1,8 @@
 import re
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin, urldefrag
+from bs4 import BeautifulSoup
+
+scrapped_urls, uniq_urls, duplicate_urls, invalid_urls = set(), set(), set(), set()
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -15,7 +18,45 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    return list()
+
+    # if the response status is either 204[No content] or 203[No Authoritative Info], skip it...
+    if (resp.status == 204 or resp.status == 203): return list()
+    # if the response status is 4XX[client error], skip it...
+    if (resp.status >= 400): return list()
+    # if already scrapped, skip it...
+    if url in scrapped_urls: return list() 
+     # if invalid url, skip it...
+    if url in invalid_urls: return list() 
+
+    html_doc = resp.raw_response.content
+
+    # parse HTML by BeautifulSoup
+    soup = BeautifulSoup(html_doc, 'html.parser')
+
+    # find all hyperlink tags within the HTML doc
+    a_tags = soup.find_all('a')
+
+    links = []
+    for i, tag in enumerate(a_tags, 1):
+        
+        href = tag.get("href")
+        # print('Relative--> ',href)
+        if is_valid(href):
+            if href not in duplicate_urls:
+                # print("urldefrag(href)[0]--> ", urldefrag(href)[0])
+
+                # combine relative URL with base URL to get absolute URL
+                absolute_url = urljoin(resp.url, urldefrag(href)[0])
+                links.append(absolute_url)
+                # mark the newly added url as seen 
+                duplicate_urls.add(absolute_url)
+
+    # scrapping the url param is done. Mark as scrapped  
+    scrapped_urls.add(url)
+    print("WEBSITE URL--> ", url)
+    print("Scrapped Urls--> ", len(scrapped_urls))
+    print("Duplicate Urls--> ", len(duplicate_urls))
+    return links
 
 def is_valid(url):
     # Decide whether to crawl this url or not. 
@@ -23,6 +64,9 @@ def is_valid(url):
     # There are already some conditions that return False.
     try:
         parsed = urlparse(url)
+
+        if url in invalid_urls: return False
+        
         if parsed.scheme not in set(["http", "https"]):
             return False
         return not re.match(
