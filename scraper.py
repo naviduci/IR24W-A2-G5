@@ -2,12 +2,14 @@ import re
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
-from simhash import Simhash, SimhashIndex
-from utils.response import Response
 from collections import Counter
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 nltk.download('stopwords')
+
+# from simhash import Simhash, SimhashIndex
+# from utils.response import Response
+# from robot import RobotsTxtParser
 
 # TODO: check if output can be produce more than twice, check 50 common words, remove 200 status but no data
 # and Detect and avoid crawling very large files, especially if they have low information value
@@ -85,7 +87,10 @@ def extract_next_links(url, resp):
     #         resp.raw_response.url: the url, again
     #         resp.raw_response.content: the content of the page!
     # Return a list with the hyperlinks (as strings) scrapped from resp.raw_response.content
-    if resp.status != 200:
+    if resp.status != 200 or not resp.raw_response.content:
+        return []
+    
+    if resp.status == 404:
         return []
     
     if (len(resp.raw_response.content) > 5 * 1024 * 1024):  # Set a threshold of 10 MB for testing:
@@ -110,7 +115,7 @@ def is_valid(url):
         print("Parsed Netloc:", parsed.netloc)
         print("Parsed Path:", parsed.path)
         """
-        if parsed.hostname==None or parsed.netloc==None:
+        if parsed.hostname == None or parsed.netloc == None:
             # print("Hostname or Netloc is None")
             return False
         validDomains=[".ics.uci.edu","cs.uci.edu",".informatics.uci.edu",
@@ -119,6 +124,16 @@ def is_valid(url):
                 or (url.find("&") != -1):
             # print("Invalid scheme or contains query parameters")
             return False
+        
+        # Instantiating the RobotsTxtParser class with the domain name
+        # robots_parser = RobotsTxtParser(parsed.netloc)
+        # is_allowed_by_robots = robots_parser.is_url_allowed(url)
+        
+        # use the 'is_allowed_by_robots' variable to determine if the URL is allowed or not
+        # if not is_allowed_by_robots:
+            # print("The URL is allowed by the robots.txt file for the domain.")
+        # else:
+            # print("The URL is not allowed by the robots.txt file for the domain.")
         
         if any(dom in parsed.hostname for dom in validDomains) \
             and not re.search(r"(css|js|bmp|gif|jpe?g|ico"
@@ -138,6 +153,7 @@ def is_valid(url):
                              r'[0-9]{2}-[0-9]{1,2}|\/[0-9]{1,2}-(19|20)[0-9]{2}|'
                              r'[0-9]{1,2}-[0-9]{1,2}-(19|20)[0-9]{2}',
                              parsed.path.lower()):
+            
             if url in UniqueUrl:
                  # print("URL already in UniqueUrl set")
                 return False
@@ -229,7 +245,7 @@ def getOutput():
     try:
         f = open("output.txt", "x")
     except Exception as e:
-        print(f'File also reading exist, updating file...')
+        print(f'output.txt exist, updating file...')
         f = open("output.txt", "w")
     finally:
         f.write(output)
