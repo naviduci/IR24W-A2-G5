@@ -93,7 +93,7 @@ def extract_next_links(url, resp):
     if resp.status == 404:
         return []
     
-    if (len(resp.raw_response.content) > 5 * 1024 * 1024):  # Set a threshold of 10 MB for testing:
+    if (len(resp.raw_response.content) > 5 * 1024 * 1024):  # Set a threshold of 5 MB for testing:
         return []
     
     webResponse = BeautifulSoup(resp.raw_response.content, 'html.parser')
