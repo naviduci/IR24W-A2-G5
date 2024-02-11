@@ -22,10 +22,12 @@ MaxTokens = 0 # the highest number of tokens found on a url
 MaxURL = "" # the url which has the highest number of tokens
 UniqueUrl = set() # contain every URL checked excluding fragments
 Subdomains = dict() # contain the subdomain as a key and the amount of pages in that subdomain as the value
-# a counter that increments down to 1 before being reset, used in updating the
-# output file containing our report.
-updateOutput = 1500
-respStats = 0
+
+data_processed = 0 # the currect data processed
+
+data_threshold = 1000000  # Set the data threshold (e.g., 1 MB)
+
+# output file Output.txt containing our report.
 
 
 def scraper(url, resp):
@@ -40,19 +42,24 @@ def scraper(url, resp):
         Frontier cache.
     """
     global respStats
-    if resp.status != 200 or resp.raw_response.content is None:
+    if resp.status != 200:
         return []
+    
+    # check content withint a page of code 200
+    if not resp.content or len(resp.content) < 100:
+        print(f"Warning: URL {url} returned a 200 status but no data")
+        return []
+
     links = extract_next_links(url, resp)
 
     # TODO: check if this work as intended
     global updateOutput
     
-    #count number of page checked, stop at certain number of pages crawl
-    if updateOutput == 1:
+    # keep track of the data being processed, update at data processed threshold
+    data_processed += len(resp.content)
+    if data_processed >= data_threshold:
         getOutput()
-        updateOutput = 1500
-    else:
-        updateOutput -= 1
+        data_processed = 0
     # checks the list of urls found on a page using the is_valid function to
     # decide whether or not to return each url
     return [link for link in links if is_valid(link)]
