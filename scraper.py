@@ -2,6 +2,7 @@ import re
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 import nltk
+import requests
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from collections import Counter
@@ -16,6 +17,7 @@ Subdomains = dict() # contain the subdomain as a key and the amount of pages in 
 data_processed = 0 # the currect data processed
 data_threshold = 5000000  # Set the data threshold (e.g., 5 MB)
 frontier_empty = False # output file Output.txt containing our report.
+visited_domains_robots = {}
 
 #extra credit 1 start
 def fetch_robots_txt(domain):
