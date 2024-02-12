@@ -49,6 +49,27 @@ def can_fetch(url):
 
 #extra credit 1 end
 
+#extra credit 2 functions (start), not implemented in scrapper yet
+
+def get_fingerprint(content, n=3, functions=hash):
+
+    soup = BeautifulSoup(content, 'html.parser')
+    all_text = soup.get_text(separator=' ', strip=True)
+    words = re.findall(r'\w+', all_text.lower())  #lower them
+
+    # ngram saperate
+    n_grams = zip(*[words[i:] for i in range(n)])
+    n_grams = [' '.join(v) for v in n_grams]
+
+    # this counter counts each words and make a dict {words: count#}
+    counts = Counter(n_grams)
+
+    hash_n_grams = {functions(k): v for k, v in counts.items()}
+
+    return set(hash_n_grams)
+
+#extra credit 2 functions (end)
+
 def scraper(url, resp):
     # global respStats
     if resp.status != 200 or not resp.raw_response.content:
