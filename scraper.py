@@ -17,7 +17,37 @@ data_processed = 0 # the currect data processed
 data_threshold = 5000000  # Set the data threshold (e.g., 5 MB)
 frontier_empty = False # output file Output.txt containing our report.
 
+#extra credit 1 start
+def fetch_robots_txt(domain):
+    """Fetch and cache the robots.txt file for a domain."""
+    if domain in visited_domains_robots:
+        return visited_domains_robots[domain]
+    
+    url = f"{domain}/robots.txt"
+    try:
+        response = requests.get(url)
+        visited_domains_robots[domain] = response.text
+    except requests.RequestException:
+        visited_domains_robots[domain] = ""
+    return visited_domains_robots[domain]
 
+def parse_robots_txt(robots_txt, url_path):
+    """Parse the robots.txt content to check if path is allowed."""
+    disallow_paths = []
+    for line in robots_txt.splitlines():
+        if line.startswith("Disallow:"):
+            disallowed_path = line.split(":", 1)[1].strip()
+            disallow_paths.append(disallowed_path)
+    return all(not url_path.startswith(path) for path in disallow_paths)
+
+def can_fetch(url):
+    """Determine if the crawler can fetch a URL based on robots.txt rules."""
+    parsed_url = urlparse(url)
+    domain = f"{parsed_url.scheme}://{parsed_url.netloc}"
+    robots_txt = fetch_robots_txt(domain)
+    return parse_robots_txt(robots_txt, parsed_url.path)
+
+#extra credit 1 end
 
 def scraper(url, resp):
     # global respStats
