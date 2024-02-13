@@ -143,6 +143,7 @@ def is_valid(url):
         # 1. Include a valid domain from the `validDomains` list.
         # 2. Do not include certain file extensions or paths indicating non-content URLs.
         # 3. Do not match certain date or event-related patterns in the path.
+        # removing restriction of blog, and some other for testing
         if any(dom in parsed.hostname for dom in validDomains) \
             and not re.search(r"(css|js|bmp|gif|jpe?g|ico"
                               + r"|png|tiff?|mid|mp2|mp3|mp4"
@@ -155,7 +156,7 @@ def is_valid(url):
                               + r"|january|february|march|april|may|june|july"
                               + r"|august|september|october|november|december"
                               + r"|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec"
-                              + r"|docs|docx|css|js|blog|page|calendar|archive|"
+                              + r"|docs||page|calendar|archive|"
                                 r"events|event|date)", parsed.path.lower())\
             and not re.match(r'\/(19|20)[0-9]{2}/|\/(19|20)[0-9]{2}$|\/(19|20)'
                              r'[0-9]{2}-[0-9]{1,2}|\/[0-9]{1,2}-(19|20)[0-9]{2}|'
@@ -249,6 +250,7 @@ def tokenize(resp):
     # Tokenizes a text file looking for an sequence of alphanumerics while
     # ignoring stop words
     # exclusionWords exclude from the list of tokens. These include months and days
+    # todo, test without exclusionwords
     urlTokens = []
     exclusionWords = {'january', 'jan', 'feb', 'february', 'march', 'mar',
                       'april', 'apr', 'may', 'june', 'jun', 'jul', 'july', 'aug'
