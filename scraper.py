@@ -5,7 +5,7 @@ from nltk.tokenize import RegexpTokenizer
 from collections import Counter
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-import requests
+# import requests
 nltk.download('stopwords')
 
 # global variables
@@ -20,8 +20,8 @@ frontier_empty = False # output file Output.txt containing our report.
 visited_domains_robots = {}
 
 #extra credit 1 start
-def fetch_robots_txt(domain):
-    """Fetch and cache the robots.txt file for a domain."""
+"""def fetch_robots_txt(domain):
+    #Fetch and cache the robots.txt file for a domain 
     if domain in visited_domains_robots:
         return visited_domains_robots[domain]
     
@@ -34,7 +34,7 @@ def fetch_robots_txt(domain):
     return visited_domains_robots[domain]
 
 def parse_robots_txt(robots_txt, url_path):
-    """Parse the robots.txt content to check if path is allowed."""
+    #Parse the robots.txt content to check if path is allowed  
     disallow_paths = []
     for line in robots_txt.splitlines():
         if line.startswith("Disallow:"):
@@ -43,12 +43,12 @@ def parse_robots_txt(robots_txt, url_path):
     return all(not url_path.startswith(path) for path in disallow_paths)
 
 def can_fetch(url):
-    """Determine if the crawler can fetch a URL based on robots.txt rules."""
+    #Determine if the crawler can fetch a URL based on robots.txt rules 
     parsed_url = urlparse(url)
     domain = f"{parsed_url.scheme}://{parsed_url.netloc}"
     robots_txt = fetch_robots_txt(domain)
     return parse_robots_txt(robots_txt, parsed_url.path)
-
+"""
 #extra credit 1 end
 
 #extra credit 2 functions (start), not implemented in scrapper yet
@@ -262,6 +262,7 @@ def tokenize(resp):
     # Tokenizes a text file looking for an sequence of alphanumerics while
     # ignoring stop words
     # exclusionWords exclude from the list of tokens. These include months and days
+    # todo, test without exclusionwords
     urlTokens = []
     exclusionWords = {'january', 'jan', 'feb', 'february', 'march', 'mar',
                       'april', 'apr', 'may', 'june', 'jun', 'jul', 'july', 'aug'
