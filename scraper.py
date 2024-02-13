@@ -3,7 +3,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from collections import Counter
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urldefrag
 from bs4 import BeautifulSoup
 # import requests
 nltk.download('stopwords')
@@ -285,13 +285,13 @@ def tokenize(resp):
         if checkToken not in sw and checkToken not in exclusionWords:
             urlTokens.append(checkToken)
 
-    # updataDBD adds all tokens found on this page to our master list
-    # containing all tokens found on all pages
-    updateDBD(urlTokens)
-    
     # Check if the number of tokens is less than the minimum required
     min_tokens = 141
     if len(resp) < min_tokens:
         return []  # Return en empty list if the page doesn't have enough tokens
+    
+    # updataDBD adds all tokens found on this page to our master list
+    # containing all tokens found on all pages
+    updateDBD(urlTokens)
 
     return urlTokens
