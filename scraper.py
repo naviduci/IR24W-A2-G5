@@ -5,7 +5,7 @@ from nltk.tokenize import RegexpTokenizer
 from collections import Counter
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-import requests
+# import requests
 nltk.download('stopwords')
 
 # global variables
@@ -20,8 +20,8 @@ frontier_empty = False # output file Output.txt containing our report.
 visited_domains_robots = {}
 
 #extra credit 1 start
-def fetch_robots_txt(domain):
-    """Fetch and cache the robots.txt file for a domain."""
+"""def fetch_robots_txt(domain):
+    #Fetch and cache the robots.txt file for a domain 
     if domain in visited_domains_robots:
         return visited_domains_robots[domain]
     
@@ -34,7 +34,7 @@ def fetch_robots_txt(domain):
     return visited_domains_robots[domain]
 
 def parse_robots_txt(robots_txt, url_path):
-    """Parse the robots.txt content to check if path is allowed."""
+    #Parse the robots.txt content to check if path is allowed  
     disallow_paths = []
     for line in robots_txt.splitlines():
         if line.startswith("Disallow:"):
@@ -43,12 +43,12 @@ def parse_robots_txt(robots_txt, url_path):
     return all(not url_path.startswith(path) for path in disallow_paths)
 
 def can_fetch(url):
-    """Determine if the crawler can fetch a URL based on robots.txt rules."""
+    #Determine if the crawler can fetch a URL based on robots.txt rules 
     parsed_url = urlparse(url)
     domain = f"{parsed_url.scheme}://{parsed_url.netloc}"
     robots_txt = fetch_robots_txt(domain)
     return parse_robots_txt(robots_txt, parsed_url.path)
-
+"""
 #extra credit 1 end
 
 #extra credit 2 functions (start), not implemented in scrapper yet
@@ -91,7 +91,7 @@ def scraper(url, resp):
     if not links:
         frontier_empty = True
 
-    # Update output.txt through getOutput() if frontier is empty
+    # Update holder.txt through getOutput() if frontier is empty
     if frontier_empty:
         getOutput()
         frontier_empty = False
@@ -139,6 +139,10 @@ def is_valid(url):
                 or (url.find("&") != -1):
             return False
         
+        # Exclude URLs that match the following criteria:
+        # 1. Include a valid domain from the `validDomains` list.
+        # 2. Do not include certain file extensions or paths indicating non-content URLs.
+        # 3. Do not match certain date or event-related patterns in the path.
         if any(dom in parsed.hostname for dom in validDomains) \
             and not re.search(r"(css|js|bmp|gif|jpe?g|ico"
                               + r"|png|tiff?|mid|mp2|mp3|mp4"
@@ -182,7 +186,6 @@ def update_max_tokens(tokens, url):
         max_url_token = len(tokens)
         max_url = url
 
-# updated for efficiency
 def extract_links_from_tags(tags):
     # takes the list of tokens created and adds them to the DBDictionary
     #updateDBD(urlTokens)
@@ -194,7 +197,6 @@ def updateDBD(Tokens):
     global tokenize_list
     tokenize_list.extend(Tokens)
 
-# update for efficiency
 def print_top_50(wordList):
     #prints the frequencies of the list of words that it is passed
     freqList = Counter(wordList)
@@ -213,35 +215,35 @@ def update_subdomains(unique_set):
            
 def getOutput():
     # returns a string with the answer to all four problems 
-    # TODO: make it output to a textfile
+    # TODO: create a textfile
     global unique_set
     global max_url
     global max_url_token
-    output = ""
+    holder = ""
     
     # Problem 1: Number of unique pages found
-    output += f"1. Number of unique pages found: {len(unique_set)}\n\n"
+    holder += f"1. Number of unique pages found: {len(unique_set)}\n\n"
 
     # Problem 2: Longest page in terms of number of words
-    output += f"2. Longest page: {max_url} with {max_url_token} words total\n\n"
+    holder += f"2. Longest page: {max_url} with {max_url_token} words total\n\n"
 
     # Problem 3: 50 most common words
-    output += "3. 50 most common words in order of most frequent to least frequent are:\n   "
+    holder += "3. 50 most common words in order of most frequent to least frequent are:\n   "
     commonWords = print_top_50(tokenize_list)
-    output += "\n  ".join(commonWords) + "\n"
+    holder += "\n  ".join(commonWords) + "\n"
 
     # Problem 4: Subdomains found
     update_subdomains(unique_set)
     sorted_subdomains = sorted(subdomains.items(), key=lambda x: x[0])
-    output += "4. Subdomains found:\n"
+    holder += "\n4. Subdomains found:\n"
     for key, value in sorted_subdomains:
-        output += f"   Subdomain name: {key}, Pages found: {value}\n"
+        holder += f"   Subdomain name: {key}, Pages found: {value}\n"
 
-    # Write output to a text file
-    with open("output.txt", "w") as file:
-        file.write(output)
+    # Write holder to a text file
+    with open("result.txt", "w") as file:
+        file.write(holder)
 
-    print("Output has been written to output.txt file.")
+    print("Result has been written to result.txt file.")
  
 def tokenize(resp):
     # Tokenizes a text file looking for an sequence of alphanumerics while
@@ -256,9 +258,9 @@ def tokenize(resp):
                       'thurs', 'friday', 'fri', 'sat', 'saturday', 'sun',
                       'sunday'}
 
-    # tokenizes with the pattern 'r'\w+'' which finds complete word.
+    # tokenizes with the pattern r'\b[a-zA-Z]{3,}\b' which finds tokens of 2 or more characters.
     # We excluded numbers to reduce extracting low value information
-    myTokenizer = RegexpTokenizer(r'\w+') # instead of '[a-z]{2,}'
+    myTokenizer = RegexpTokenizer(r'\b[a-zA-Z]{3,}\b') # instead of '[a-z]{2,}'
     tempTokens = myTokenizer.tokenize(resp)
     sw = stopwords.words('english')
 
