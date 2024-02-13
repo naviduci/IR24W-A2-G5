@@ -149,11 +149,11 @@ def is_valid(url):
         # 2. Do not include certain file extensions or paths indicating non-content URLs.
         # 3. Do not include months or mentioned of calendar in the URLs 
         # 3. Do not match certain date or event-related patterns **REMOVED FOR TESTING**.
-        """and not re.match(r'\/(19|20)[0-9]{2}/|\/(19|20)[0-9]{2}$|\/(19|20)'
-                             r'[0-9]{2}-[0-9]{1,2}|\/[0-9]{1,2}-(19|20)[0-9]{2}|'
-                             r'[0-9]{1,2}-[0-9]{1,2}-(19|20)[0-9]{2}',
-                             parsed.path.lower())
-            
+        """+ r"|january|february|march|april|may|june|july"
+                              + r"|august|september|october|november|december"
+                              + r"|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec"
+                              + r"|docs|page|calendar|archive|"
+                                r"events|event|date)"
                               """
         if any(domain in parsed.hostname for domain in validDomains) \
                 and not re.search(r"(css|js|bmp|gif|jpe?g|ico"
