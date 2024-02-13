@@ -156,7 +156,7 @@ def is_valid(url):
                               + r"|january|february|march|april|may|june|july"
                               + r"|august|september|october|november|december"
                               + r"|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec"
-                              + r"|docs||page|calendar|archive|"
+                              + r"|docs|page|calendar|archive|"
                                 r"events|event|date)", parsed.path.lower())\
             and not re.match(r'\/(19|20)[0-9]{2}/|\/(19|20)[0-9]{2}$|\/(19|20)'
                              r'[0-9]{2}-[0-9]{1,2}|\/[0-9]{1,2}-(19|20)[0-9]{2}|'
