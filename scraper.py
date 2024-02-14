@@ -152,8 +152,8 @@ def is_valid(url):
                                   r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
                                   r"|ps|eps|tex|txt|ppt|pptx|doc|docx|xls|xlsx"
                                   r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
-                                  r"|dll|cnf|tgz|sha1|php|z|odc"
-                                  r"|thmx|mso|arff|rtf|jar|docs|bib"
+                                  r"|dll|cnf|tgz|sha1|php|z|odc|calendar|archive"
+                                  r"|thmx|mso|arff|rtf|jar|docs|bib|events|event|date"
                                   r"|rm|smil|wmv|swf|wma|zip|rar|gz)",
                                   parsed.path.lower())\
                 and not re.match(r'\/(19|20)[0-9]{2}/|\/(19|20)[0-9]{2}$|\/(19|20)'
