@@ -17,7 +17,7 @@ unique_set = set() # contain every URL checked excluding fragments
 subdomains = dict() # contain the subdomain as a key and the amount of pages in that subdomain as the value
 data_processed = 0 # the currect data processed
 data_threshold = 2000000  # Set the data threshold (e.g., 2 MB)
-frontier_empty = False # output file Output.txt containing our report.
+# frontier_empty = False # output file Output.txt containing our report.
 visited_domains_robots = {}
 visit_count = dict() #contain dict that counts how many visits for each web
 
@@ -88,7 +88,7 @@ def checkif_toosimilar(left, right, threshold = 0.7):
 def scraper(url, resp):
     global data_processed
     global data_threshold
-    global frontier_empty
+    # global frontier_empty
     # check content within a page of code 200
     if resp.status != 200 or not resp.raw_response.content:
         return []
@@ -170,26 +170,28 @@ def is_valid(url):
         # 1. Include a valid domain from the `validDomains` list.
         # 2. Do not include certain file extensions or paths indicating non-content URLs.
         # 3. Do not include months or mentioned of calendar in the URLs 
-        # 3. Do not match certain date or event-related patterns **REMOVED FOR TESTING**.
+        # 4. Do not match certain date or event-related patterns **REMOVED FOR TESTING**.
         """+ r"|january|february|march|april|may|june|july"
                               + r"|august|september|october|november|december"
                               + r"|jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec"
                               + r"|docs|page|calendar|archive|"
                                 r"events|event|date)"
                               """
+        # r"|names|epub|csv|page"
         if any(domain in parsed.hostname for domain in validDomains) \
                 and not re.search(r"(css|js|bmp|gif|jpe?g|ico"
                                   r"|png|tiff?|mid|mp2|mp3|mp4"
                                   r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
-                                  r"|ps|eps|tex|txt|ppt|pptx|doc|docx|xls|xlsx|names"
+                                  r"|ps|eps|tex|txt|ppt|pptx|doc|docx|xls|xlsx"
                                   r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
-                                  r"|epub|dll|cnf|tgz|sha1|php|z|odc"
-                                  r"|thmx|mso|arff|rtf|jar|csv|docs|page"
-                                  r"|rm|smil|wmv|swf|wma|zip|rar|gz)", parsed.path.lower())\
+                                  r"|dll|cnf|tgz|sha1|php|z|odc"
+                                  r"|thmx|mso|arff|rtf|jar|docs|bib"
+                                  r"|rm|smil|wmv|swf|wma|zip|rar|gz)",
+                                  parsed.path.lower())\
                 and not re.match(r'\/(19|20)[0-9]{2}/|\/(19|20)[0-9]{2}$|\/(19|20)'
                              r'[0-9]{2}-[0-9]{1,2}|\/[0-9]{1,2}-(19|20)[0-9]{2}|'
-                             r'[0-9]{1,2}-[0-9]{1,2}-(19|20)[0-9]{2}',
-                             parsed.path.lower()):
+                             r'[0-9]{1,2}-[0-9]{1,2}-(19|20)[0-9]{2}'
+                             r'/\d{4}-\d{2}-\d{2}/', parsed.path.lower()):
 
             if url_without_fragment in visit_count and visit_count[url_without_fragment] >= 3:
                 return False  # Do not crawl if already visited more than 3 times
@@ -208,7 +210,7 @@ def is_valid(url):
         print(f'Error validating IP address for URL: {url}. Error: {e}')
         return False
 
-# helper methods
+# helper functions
 def get_content_from_response(resp):
     return resp.raw_response.content if hasattr(resp.raw_response, 'content') else None
 
@@ -308,7 +310,7 @@ def tokenize(resp):
             urlTokens.append(checkToken)
 
     # Check if the number of tokens is less than the minimum required
-    min_tokens = 141
+    min_tokens = 41
     if len(resp) < min_tokens:
         return []  # Return en empty list if the page doesn't have enough tokens
     
