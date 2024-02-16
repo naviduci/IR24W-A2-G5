@@ -1,0 +1,173 @@
+1. Number of unique pages found: 4432
+
+2. Longest page: http://www.ics.uci.edu/~shantas/publications/20-secret-sharing-aggregation-TKDE-shantanu with 27287 words total
+
+3. 50 most common words in order of most frequent to least frequent are:
+   research
+  software
+  computer
+  information
+  student
+  students
+  engineering
+  uci
+  data
+  ramesh
+  informatics
+  science
+  graduate
+  design
+  undergraduate
+  news
+  department
+  courses
+  past
+  projects
+  books
+  current
+  people
+  course
+  search
+  read
+  new
+  one
+  computing
+  university
+  time
+  support
+  jain
+  ics
+  learning
+  process
+  profiles
+  systems
+  events
+  work
+  irvine
+  use
+  application
+  also
+  page
+  vision
+  policies
+  code
+  management
+  master
+
+4. Subdomains found:
+   Subdomain name:  codeexchange.ics.uci.edu, Pages found: 1
+   Subdomain name: accessibility.ics.uci.edu, Pages found: 1
+   Subdomain name: acoi.ics.uci.edu, Pages found: 38
+   Subdomain name: aiclub.ics.uci.edu, Pages found: 1
+   Subdomain name: archive.ics.uci.edu, Pages found: 2
+   Subdomain name: asterix.ics.uci.edu, Pages found: 5
+   Subdomain name: awareness.ics.uci.edu, Pages found: 1
+   Subdomain name: cbcl.ics.uci.edu, Pages found: 1
+   Subdomain name: cert.ics.uci.edu, Pages found: 2
+   Subdomain name: cgvw.ics.uci.edu, Pages found: 1
+   Subdomain name: checkmate.ics.uci.edu, Pages found: 2
+   Subdomain name: chenli.ics.uci.edu, Pages found: 5
+   Subdomain name: cherry.ics.uci.edu, Pages found: 1
+   Subdomain name: chime.ics.uci.edu, Pages found: 1
+   Subdomain name: cloudberry.ics.uci.edu, Pages found: 2
+   Subdomain name: cml.ics.uci.edu, Pages found: 57
+   Subdomain name: code.ics.uci.edu, Pages found: 14
+   Subdomain name: codeexchange.ics.uci.edu, Pages found: 2
+   Subdomain name: computableplant.ics.uci.edu, Pages found: 34
+   Subdomain name: coronavirustwittermap.ics.uci.edu, Pages found: 1
+   Subdomain name: cradl.ics.uci.edu, Pages found: 11
+   Subdomain name: create.ics.uci.edu, Pages found: 4
+   Subdomain name: cwicsocal18.ics.uci.edu, Pages found: 11
+   Subdomain name: cyberclub.ics.uci.edu, Pages found: 1
+   Subdomain name: dataguard.ics.uci.edu, Pages found: 1
+   Subdomain name: dataprotector.ics.uci.edu, Pages found: 1
+   Subdomain name: dblp.ics.uci.edu, Pages found: 2
+   Subdomain name: dgillen.ics.uci.edu, Pages found: 8
+   Subdomain name: dynamo.ics.uci.edu, Pages found: 1
+   Subdomain name: emj-pc.ics.uci.edu, Pages found: 1
+   Subdomain name: emj.ics.uci.edu, Pages found: 33
+   Subdomain name: esl.ics.uci.edu, Pages found: 1
+   Subdomain name: evoke.ics.uci.edu, Pages found: 7
+   Subdomain name: flamingo.ics.uci.edu, Pages found: 12
+   Subdomain name: fr.ics.uci.edu, Pages found: 6
+   Subdomain name: frost.ics.uci.edu, Pages found: 1
+   Subdomain name: futurehealth.ics.uci.edu, Pages found: 6
+   Subdomain name: grape.ics.uci.edu, Pages found: 73
+   Subdomain name: graphics.ics.uci.edu, Pages found: 12
+   Subdomain name: graphmod.ics.uci.edu, Pages found: 1
+   Subdomain name: hack.ics.uci.edu, Pages found: 1
+   Subdomain name: hai.ics.uci.edu, Pages found: 3
+   Subdomain name: hana.ics.uci.edu, Pages found: 2
+   Subdomain name: hobbes.ics.uci.edu, Pages found: 2
+   Subdomain name: hombao.ics.uci.edu, Pages found: 2
+   Subdomain name: honors.ics.uci.edu, Pages found: 1
+   Subdomain name: hpi.ics.uci.edu, Pages found: 3
+   Subdomain name: i-sensorium.ics.uci.edu, Pages found: 1
+   Subdomain name: ics.uci.edu, Pages found: 9
+   Subdomain name: informatics.ics.uci.edu, Pages found: 1
+   Subdomain name: intranet.ics.uci.edu, Pages found: 2
+   Subdomain name: ipubmed.ics.uci.edu, Pages found: 2
+   Subdomain name: isg.ics.uci.edu, Pages found: 61
+   Subdomain name: jgarcia.ics.uci.edu, Pages found: 3
+   Subdomain name: jujube.ics.uci.edu, Pages found: 1
+   Subdomain name: kdd.ics.uci.edu, Pages found: 1
+   Subdomain name: keys.ics.uci.edu, Pages found: 1
+   Subdomain name: luci.ics.uci.edu, Pages found: 8
+   Subdomain name: mailman.ics.uci.edu, Pages found: 3
+   Subdomain name: malek.ics.uci.edu, Pages found: 3
+   Subdomain name: mapgrid.ics.uci.edu, Pages found: 1
+   Subdomain name: mcs.ics.uci.edu, Pages found: 24
+   Subdomain name: mdogucu.ics.uci.edu, Pages found: 1
+   Subdomain name: mds.ics.uci.edu, Pages found: 12
+   Subdomain name: metaviz.ics.uci.edu, Pages found: 1
+   Subdomain name: mhcid.ics.uci.edu, Pages found: 13
+   Subdomain name: mondego.ics.uci.edu, Pages found: 8
+   Subdomain name: mse.ics.uci.edu, Pages found: 1
+   Subdomain name: mswe.ics.uci.edu, Pages found: 9
+   Subdomain name: nalini.ics.uci.edu, Pages found: 9
+   Subdomain name: newport.eecs.uci.edu, Pages found: 2
+   Subdomain name: ngs.ics.uci.edu, Pages found: 1101
+   Subdomain name: omni.ics.uci.edu, Pages found: 1
+   Subdomain name: password.ics.uci.edu, Pages found: 1
+   Subdomain name: pasteur.ics.uci.edu, Pages found: 2
+   Subdomain name: plrg.eecs.uci.edu, Pages found: 11
+   Subdomain name: plrg.ics.uci.edu, Pages found: 16
+   Subdomain name: psearch.ics.uci.edu, Pages found: 3
+   Subdomain name: redmiles.ics.uci.edu, Pages found: 3
+   Subdomain name: riscit.ics.uci.edu, Pages found: 1
+   Subdomain name: satware.ics.uci.edu, Pages found: 1
+   Subdomain name: sconce.ics.uci.edu, Pages found: 1
+   Subdomain name: sdcl.ics.uci.edu, Pages found: 77
+   Subdomain name: se.ics.uci.edu, Pages found: 1
+   Subdomain name: seal.ics.uci.edu, Pages found: 3
+   Subdomain name: seraja.ics.uci.edu, Pages found: 1
+   Subdomain name: sherlock.ics.uci.edu, Pages found: 2
+   Subdomain name: sli.ics.uci.edu, Pages found: 568
+   Subdomain name: sourcerer.ics.uci.edu, Pages found: 1
+   Subdomain name: sprout.ics.uci.edu, Pages found: 2
+   Subdomain name: stairs.ics.uci.edu, Pages found: 1
+   Subdomain name: statconsulting.ics.uci.edu, Pages found: 1
+   Subdomain name: tastier.ics.uci.edu, Pages found: 2
+   Subdomain name: tippers.ics.uci.edu, Pages found: 1
+   Subdomain name: tippersweb.ics.uci.edu, Pages found: 2
+   Subdomain name: transformativeplay.ics.uci.edu, Pages found: 35
+   Subdomain name: tutors.ics.uci.edu, Pages found: 1
+   Subdomain name: ugradforms.ics.uci.edu, Pages found: 1
+   Subdomain name: unite.ics.uci.edu, Pages found: 10
+   Subdomain name: vision.ics.uci.edu, Pages found: 9
+   Subdomain name: wics.ics.uci.edu, Pages found: 251
+   Subdomain name: www-db.ics.uci.edu, Pages found: 19
+   Subdomain name: www.cecs.uci.edu, Pages found: 7
+   Subdomain name: www.cert.ics.uci.edu, Pages found: 1
+   Subdomain name: www.cs.uci.edu, Pages found: 43
+   Subdomain name: www.economics.uci.edu, Pages found: 8
+   Subdomain name: www.graphics.ics.uci.edu, Pages found: 1
+   Subdomain name: www.ics.uci.edu, Pages found: 861
+   Subdomain name: www.informatics.ics.uci.edu, Pages found: 2
+   Subdomain name: www.informatics.uci.edu, Pages found: 651
+   Subdomain name: www.nacs.uci.edu, Pages found: 4
+   Subdomain name: www.physics.uci.edu, Pages found: 1
+   Subdomain name: www.stat.uci.edu, Pages found: 155
+   Subdomain name: www.statistics.uci.edu, Pages found: 1
+   Subdomain name: xtune.ics.uci.edu, Pages found: 7
+   Subdomain name: yarra.ics.uci.edu, Pages found: 1
