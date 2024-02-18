@@ -203,12 +203,10 @@ def updateDBD(Tokens):
     tokenize_list.extend(Tokens)
 
 def print_top_50(wordList):
-    #prints the frequencies of the list of words that it is passed
+    # prints the frequencies of the list of words that it is passed
     freqList = Counter(wordList)
     most_common_words = freqList.most_common(50)
-    for word, freq in most_common_words:
-        print(f"{word}: {freq}")
-    return [word for word, _ in most_common_words]
+    return most_common_words
 
 def update_subdomains(unique_set):
     # Takes the set containing all unique urls and builds a dictionary
@@ -235,9 +233,10 @@ def getOutput():
     holder += f"2. Longest page: {max_url} with {max_url_token} words total\n\n"
 
     # Problem 3: 50 most common words
-    holder += "3. 50 most common words in order of most frequent to least frequent are:\n   "
+    holder += "3. 50 most common words in order of most frequent to least frequent are:\n"
     commonWords = print_top_50(tokenize_list)
-    holder += "\n  ".join(commonWords) + "\n"
+    for word, freq in commonWords:
+        holder += f"   {word}: {freq}\n"
 
     # Problem 4: Subdomains found
     update_subdomains(unique_set)
