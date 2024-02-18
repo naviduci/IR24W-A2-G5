@@ -150,7 +150,7 @@ def is_valid(url):
                 and not re.search(r"(css|js|bmp|gif|jpe?g|ico"
                                   r"|png|tiff?|mid|mp2|mp3|mp4"
                                   r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
-                                  r"|ps|eps|tex|txt|ppt|pptx|doc|docx|xls|xlsx"
+                                  r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx"
                                   r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
                                   r"|dll|cnf|tgz|sha1|php|z|odc|calendar|archive"
                                   r"|thmx|mso|arff|rtf|jar|docs|bib|events|event|date"
