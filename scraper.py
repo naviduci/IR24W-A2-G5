@@ -205,8 +205,10 @@ def updateDBD(Tokens):
 def print_top_50(wordList):
     #prints the frequencies of the list of words that it is passed
     freqList = Counter(wordList)
-    finalList = [word for word, _ in freqList.most_common(50)]
-    return finalList
+    most_common_words = freqList.most_common(50)
+    for word, freq in most_common_words:
+        print(f"{word}: {freq}")
+    return [word for word, _ in most_common_words]
 
 def update_subdomains(unique_set):
     # Takes the set containing all unique urls and builds a dictionary
